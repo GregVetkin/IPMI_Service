@@ -1,7 +1,7 @@
 from modules.config import IPMIServiceConfigReader
 from modules.logger import Logger
 from modules.ipmisensors import IpmitoolSensorsCollector, IPMISernsor, IPMIConnectionData, FAKEIpmitoolSensorsCollector
-from modules.database.postgres import PostgresDatabase
+from modules.database.postgres import PostgresDatabase, IPMIPostgresDatabase
 
 
 
@@ -11,7 +11,6 @@ config = IPMIServiceConfigReader(CONFIG_PATH).get_service_config()
 
 
 logger = Logger(config.logger)
-logger.info(f"test {config.database.database}")
 
 
 
@@ -19,12 +18,10 @@ logger.info(f"test {config.database.database}")
 
 
 
-connection_data = IPMIConnectionData(
-    host        = "192.168.0.240",
-    username    = "admin",
-    password    = "admin",
-)
+db = IPMIPostgresDatabase(config.database)
+devs = db.get_ipmi_devices_data()
 
-sensors = FAKEIpmitoolSensorsCollector(connection_data).collect()
-
-db = PostgresDatabase(config.database)
+for connection_data in devs:
+    sensors = FAKEIpmitoolSensorsCollector(connection_data).collect()
+    for sensor in sensors:
+        print(sensor)

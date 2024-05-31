@@ -1,7 +1,7 @@
 from modules.config import IPMIServiceConfigReader
 from modules.logger import Logger
 from modules.ipmisensors import IpmitoolSensorsCollector, IPMISernsor, IPMIConnectionData, FAKEIpmitoolSensorsCollector
-
+from modules.database.postgres import PostgresDatabase
 
 
 
@@ -27,7 +27,4 @@ connection_data = IPMIConnectionData(
 
 sensors = FAKEIpmitoolSensorsCollector(connection_data).collect()
 
-
-for _ in sensors:
-    print(_)
-    
+db = PostgresDatabase(config.database)

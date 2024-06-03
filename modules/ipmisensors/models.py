@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class IPMISensor:
+class Sensor:
     name:   str     = None
     value:  str     = None
     unit:   str     = None
@@ -16,7 +16,7 @@ class IPMISensor:
 
 
 @dataclass
-class IPMIConnectionData:
+class ConnectionData:
     host:       str     = None
     username:   str     = None
     password:   str     = None

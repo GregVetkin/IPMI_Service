@@ -1,9 +1,10 @@
 import psycopg2
-from typing import List
-from .database import Database
+
+from typing                     import List
+from .database                  import Database, DatabaseIPMI
 
 from modules.config.models      import DatabaseConfig
-from modules.ipmisensors        import IPMIConnectionData, IPMISensor
+from modules.ipmisensors        import ConnectionData, Sensor
 
 
 
@@ -43,17 +44,17 @@ class PostgresDatabase(Database):
 
 
 
-class IPMIPostgresDatabase(PostgresDatabase):
+class PostgresDatabaseIPMI(PostgresDatabase, DatabaseIPMI):
     def __init__(self, connection_config: DatabaseConfig):
         super().__init__(connection_config)
     
-    def get_ipmi_connections_data(self) -> List[IPMIConnectionData]:
+    def get_ipmi_connections_data(self) -> List[ConnectionData]:
         ipmi_devices    = []
         query           = """SELECT address, username, password FROM IPMI.BMC;"""
         result          = self._fetch_results(query)
         for _ in result:
             ipmi_devices.append(
-                IPMIConnectionData(
+                ConnectionData(
                     host     = _[0],
                     username = _[1],
                     password = _[2],
@@ -62,7 +63,7 @@ class IPMIPostgresDatabase(PostgresDatabase):
         return ipmi_devices
     
 
-    def get_ipmi_sensors_data(self, bmc: IPMIConnectionData) -> List[IPMISensor]:
+    def get_ipmi_sensors_data(self, bmc: ConnectionData) -> List[Sensor]:
         sensors = []
         query   = """
             SELECT
@@ -85,7 +86,7 @@ class IPMIPostgresDatabase(PostgresDatabase):
 
         for _ in result:
             sensors.append(
-                IPMISensor(
+                Sensor(
                     name    = _[0],
                     unit    = _[1],
                     status  = _[2],
@@ -100,7 +101,7 @@ class IPMIPostgresDatabase(PostgresDatabase):
         return sensors
         
 
-    def update_sensor_data(self, bmc: IPMIConnectionData, sensor: IPMISensor):
+    def update_sensor_data(self, bmc: ConnectionData, sensor: Sensor):
         query = """
             UPDATE 
                 IPMI.SENSORS
@@ -134,7 +135,7 @@ class IPMIPostgresDatabase(PostgresDatabase):
         ])
 
 
-    def insert_sensor_data(self, bmc: IPMIConnectionData, sensor: IPMISensor):
+    def insert_sensor_data(self, bmc: ConnectionData, sensor: Sensor):
         query = """
         INSERT INTO
             IPMI.SENSORS
@@ -180,7 +181,7 @@ class IPMIPostgresDatabase(PostgresDatabase):
         ])
 
 
-    def insert_sensor_value(self, bmc: IPMIConnectionData, sensor: IPMISensor):
+    def insert_sensor_value(self, bmc: ConnectionData, sensor: Sensor):
         query = """
         INSERT INTO 
             IPMI.SENSORS_VALUE (sensor_id, value)

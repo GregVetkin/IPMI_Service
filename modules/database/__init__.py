@@ -1,6 +1,9 @@
-from .postgres import IPMIPostgresDatabase
-
+from .postgres import PostgresDatabase, PostgresDatabaseIPMI 
+from .database import Database, DatabaseIPMI
 
 __all__ = [
-    "IPMIPostgresDatabase"
+    "Database",
+    "DatabaseIPMI",
+    "PostgresDatabase",
+    "PostgresDatabaseIPMI",
 ]

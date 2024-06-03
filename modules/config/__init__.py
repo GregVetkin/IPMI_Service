@@ -1,6 +1,6 @@
-from .parser import IPMIServiceConfigReader
+from .parser import ServiceConfigReader
 
 
 __all__ = [
-    "IPMIServiceConfigReader"
+    "ServiceConfigReader",
 ]

@@ -1,9 +1,9 @@
-from ..models    import IPMIConnectionData
+from ..models    import ConnectionData
 from ..ipmitool  import IpmitoolSensorsCollector
 
 
-class FAKEIpmitoolSensorsCollector(IpmitoolSensorsCollector):
-    def __init__(self, connection_data: IPMIConnectionData):
+class FAKESensorsCollector(IpmitoolSensorsCollector):
+    def __init__(self, connection_data: ConnectionData):
         super().__init__(connection_data)
     
     def _ipmitool_data(self) -> str:

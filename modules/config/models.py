@@ -21,7 +21,7 @@ class LoggerConfig:
 
 
 @dataclass
-class IPMIServiceConfig:
+class ServiceConfig:
     database:   DatabaseConfig
     worker:     WorkerConfig
     logger:     LoggerConfig

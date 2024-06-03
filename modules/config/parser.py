@@ -1,22 +1,13 @@
 import configparser
-from .models import IPMIServiceConfig, DatabaseConfig, LoggerConfig, WorkerConfig
+from .models        import ServiceConfig, DatabaseConfig, LoggerConfig, WorkerConfig
+from ._constants    import *
 
 
-SECTION_DATABASE            = "DATABASE"
-PARAMETER_DATABASE_NAME     = "db_name"
-PARAMETER_DATABASE_USER     = "db_user"
-PARAMETER_DATABASE_PASS     = "db_pass"
-PARAMETER_DATABASE_HOST     = "db_host"
-PARAMETER_DATABASE_PORT     = "db_port"
-
-SECTION_WORKER              = "WORKER"
-PARAMETER_WORKER_INTERVAL   = "interval"
-
-SECTION_LOGS                = "LOGS"
-PARAMETER_LOGS_LOGFILE      = "log_file"
 
 
-class IPMIServiceConfigReader:
+
+
+class ServiceConfigReader:
     def __init__(self, config_file):
         self._config = self._parse_config_file(config_file)
 
@@ -44,8 +35,8 @@ class IPMIServiceConfigReader:
             file = self._config.get(SECTION_LOGS, PARAMETER_LOGS_LOGFILE),
         )
     
-    def get_service_config(self) -> IPMIServiceConfig:
-        return IPMIServiceConfig(
+    def get_service_config(self) -> ServiceConfig:
+        return ServiceConfig(
             database    = self._get_database_configuration(),
             worker      = self._get_worker_configuration(),
             logger      = self._get_logger_configuration(),

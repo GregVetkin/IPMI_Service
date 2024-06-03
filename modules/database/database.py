@@ -1,4 +1,7 @@
-from abc import ABC, abstractmethod
+from abc                    import ABC, abstractmethod
+from typing                 import List
+from modules.ipmisensors    import ConnectionData, Sensor
+
 
 
 class Database(ABC):
@@ -18,3 +21,25 @@ class Database(ABC):
     def _fetch_results(self, query, params=None):
         pass
 
+
+
+class DatabaseIPMI(ABC):
+    @abstractmethod
+    def get_ipmi_connections_data(self) -> List[ConnectionData]:
+        pass
+
+    @abstractmethod
+    def get_ipmi_sensors_data(self, bmc: ConnectionData) -> List[Sensor]:
+        pass
+
+    @abstractmethod
+    def update_sensor_data(self, bmc: ConnectionData, sensor: Sensor):
+        pass
+
+    @abstractmethod
+    def insert_sensor_data(self, bmc: ConnectionData, sensor: Sensor):
+        pass
+
+    @abstractmethod
+    def insert_sensor_value(self, bmc: ConnectionData, sensor: Sensor):
+        pass

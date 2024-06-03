@@ -1,7 +1,8 @@
 import subprocess
 import re
-from .models import IPMIConnectionData, IPMISensor
-from typing import List
+from .models    import ConnectionData, Sensor
+from .base      import SensorsCollectorIPMI
+from typing     import List
 
 
 IPMITOOL_PATTERN =  r"^"                                               + \
@@ -20,8 +21,8 @@ IPMITOOL_PATTERN =  r"^"                                               + \
 
 
 
-class IpmitoolSensorsCollector():
-    def __init__(self, connection_data: IPMIConnectionData) -> None:
+class IpmitoolSensorsCollector(SensorsCollectorIPMI):
+    def __init__(self, connection_data: ConnectionData) -> None:
         self._conn = connection_data
 
 
@@ -49,11 +50,11 @@ class IpmitoolSensorsCollector():
         return result.stdout
     
 
-    def collect(self) -> List[IPMISensor]:
+    def collect(self) -> List[Sensor]:
         sensors = []
         for sensor_data_str in self._ipmitool_data().splitlines():
             sensor_data_dic = self._parse_sensor_data(sensor_data_str)
-            sensor = IPMISensor(**sensor_data_dic)
+            sensor = Sensor(**sensor_data_dic)
             CorrectSensor().fix_sensor(sensor)
             sensors.append(sensor)
         return sensors
@@ -89,7 +90,7 @@ class CorrectSensor:
         return float(value)
     
 
-    def fix_sensor(self, sensor: IPMISensor):
+    def fix_sensor(self, sensor: Sensor):
         sensor.value    = self._fix_sensor_value(sensor.value)
 
         sensor.status   = self._fix_sensor_status(sensor.status)

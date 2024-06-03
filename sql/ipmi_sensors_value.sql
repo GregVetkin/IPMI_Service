@@ -1,0 +1,7 @@
+CREATE TABLE IPMI.SENSORS_VALUE (
+    id          SERIAL PRIMARY KEY,
+    sensor_id   INT NOT NULL,
+    value       FLOAT,
+    time        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (sensor_id) REFERENCES IPMI.SENSORS(id)
+);

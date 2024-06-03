@@ -4,7 +4,7 @@ from typing                     import List
 from .database                  import Database, DatabaseIPMI
 
 from modules.config.models      import DatabaseConfig
-from modules.ipmisensors        import ConnectionData, Sensor
+from modules.ipmi               import ConnectionData, Sensor
 
 
 
@@ -55,7 +55,7 @@ class PostgresDatabaseIPMI(PostgresDatabase, DatabaseIPMI):
         for _ in result:
             ipmi_devices.append(
                 ConnectionData(
-                    host     = _[0],
+                    address  = _[0],
                     username = _[1],
                     password = _[2],
                 )
@@ -82,7 +82,7 @@ class PostgresDatabaseIPMI(PostgresDatabase, DatabaseIPMI):
                 IPMI.BMC as b ON s.bmc_id = b.id
             WHERE b.address = %s;
         """
-        result          = self._fetch_results(query, [bmc.host,])
+        result          = self._fetch_results(query, [bmc.address,])
 
         for _ in result:
             sensors.append(
@@ -131,7 +131,7 @@ class PostgresDatabaseIPMI(PostgresDatabase, DatabaseIPMI):
             sensor.uc,
             sensor.unr,
             sensor.name,
-            bmc.host,
+            bmc.address,
         ])
 
 
@@ -168,7 +168,7 @@ class PostgresDatabaseIPMI(PostgresDatabase, DatabaseIPMI):
         """
 
         self._execute_query(query, params=[
-            bmc.host,
+            bmc.address,
             sensor.name,
             sensor.unit,
             sensor.status,
@@ -200,7 +200,7 @@ class PostgresDatabaseIPMI(PostgresDatabase, DatabaseIPMI):
         self._execute_query(query, params=[
             sensor.value,
             sensor.name,
-            bmc.host,
+            bmc.address,
         ])
 
 

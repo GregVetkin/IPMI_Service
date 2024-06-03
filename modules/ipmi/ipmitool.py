@@ -42,7 +42,7 @@ class IpmitoolSensorsCollector(SensorsCollectorIPMI):
 
 
     def _ipmitool_data(self) -> str:
-        r = ["sudo", "ipmitool", "-H", self._conn.host, "-U", self._conn.username, "-P", self._conn.password, "sensor", "list"]
+        r = ["sudo", "ipmitool", "-H", self._conn.address, "-U", self._conn.username, "-P", self._conn.password, "sensor", "list"]
         # l = ["sudo", "ipmitool", "sensor", "list"]
         # command = r if not local else l
         command = r

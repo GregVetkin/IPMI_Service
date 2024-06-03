@@ -1,6 +1,6 @@
 from modules.config             import ServiceConfigReader
 from modules.logger             import Logger
-from modules.ipmisensors        import IpmitoolSensorsCollector, FAKESensorsCollector
+from modules.ipmi               import IpmitoolSensorsCollector, FAKESensorsCollector
 from modules.database           import PostgresDatabaseIPMI
 from service                    import ServiceIPMI
 from time                       import sleep
@@ -24,11 +24,5 @@ if __name__ == "__main__":
     service     = ServiceIPMI(ipmi, db, logger)
 
     while True:
-        try:
-            logger.info("Начало сбора")
-            service.run()
-        except Exception as e:
-            logger.error(str(e))
-        else:
-            logger.info("Сбор сенсоров успешно закончен")
+        service.run()
         sleep(interval)

@@ -1,4 +1,4 @@
-from modules.ipmisensors    import Sensor, IpmitoolSensorsCollector, ConnectionData
+from modules.ipmi           import Sensor, IpmitoolSensorsCollector, ConnectionData, SensorsCollectorIPMI
 from modules.database       import DatabaseIPMI
 from modules.logger         import Logger
 from typing                 import List
@@ -6,7 +6,7 @@ from typing                 import List
 
 
 class ServiceIPMI:
-    def __init__(self, ipmi: IpmitoolSensorsCollector, database: DatabaseIPMI, logger: Logger):
+    def __init__(self, ipmi: SensorsCollectorIPMI, database: DatabaseIPMI, logger: Logger):
         self._ipmi  = ipmi
         self._db    = database
         self._log   = logger
@@ -17,21 +17,21 @@ class ServiceIPMI:
     def _get_sensors_cache(self):
         self._cache = {}
         for bmc in self._db.get_ipmi_connections_data():
-            self._cache[bmc.host] = {}
+            self._cache[bmc.address] = {}
             sensors = self._db.get_ipmi_sensors_data(bmc)
             for sensor in sensors:
-                self._cache[bmc.host][sensor.name] = sensor
+                self._cache[bmc.address][sensor.name] = sensor
     
     def _sensor_cache_unchanged(self, bmc: ConnectionData, sensor: Sensor):
         value = sensor.value
         sensor.value = None
-        unchanged = sensor == self._cache[bmc.host][sensor.name]
+        unchanged = sensor == self._cache[bmc.address][sensor.name]
         sensor.value = value
         return unchanged
     
     def _sensor_in_cache(self, bmc: ConnectionData, sensor: Sensor):
-        if bmc.host in self._cache:
-            return sensor.name in self._cache[bmc.host]
+        if bmc.address in self._cache:
+            return sensor.name in self._cache[bmc.address]
         else:
             return False
         

@@ -1,6 +1,6 @@
 from abc                    import ABC, abstractmethod
 from typing                 import List
-from modules.ipmisensors    import ConnectionData, Sensor
+from modules.ipmi           import ConnectionData, Sensor
 
 
 

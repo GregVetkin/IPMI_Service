@@ -1,7 +1,8 @@
 import subprocess
 import re
-from .models import IPMIConnectionData, IPMISernsor
+from .models import IPMIConnectionData, IPMISensor
 from typing import List
+
 
 IPMITOOL_PATTERN =  r"^"                                               + \
                     r"(?P<name>[\w\s\.]+)\s*\|\s*"                     + \
@@ -16,6 +17,8 @@ IPMITOOL_PATTERN =  r"^"                                               + \
                     r"(?P<unr>[\d\.]+|na)\s*"                          + \
                     r"$"
                         
+
+
 
 class IpmitoolSensorsCollector():
     def __init__(self, connection_data: IPMIConnectionData) -> None:
@@ -46,11 +49,55 @@ class IpmitoolSensorsCollector():
         return result.stdout
     
 
-    def collect(self) -> List[IPMISernsor]:
+    def collect(self) -> List[IPMISensor]:
         sensors = []
         for sensor_data_str in self._ipmitool_data().splitlines():
             sensor_data_dic = self._parse_sensor_data(sensor_data_str)
-            sensors.append(IPMISernsor(**sensor_data_dic))
+            sensor = IPMISensor(**sensor_data_dic)
+            CorrectSensor().fix_sensor(sensor)
+            sensors.append(sensor)
         return sensors
+    
+
+
+
+class CorrectSensor:
+
+    def _is_hex(self, value: str):
+        return value.startswith("0x")
+    
+    def _is_NA(sef, value: str):
+        return value == "na"
+    
+
+    def _fix_sensor_value(self, value: str):
+        if self._is_NA(value):
+            return None
+        if self._is_hex(value):
+            return int(value, base=16)
+        return float(value)
+    
+
+    def _fix_sensor_status(self, value: str):
+        if self._is_NA(value):
+            return None
+        return value
+    
+    def _fix_sensor_threshold(self, value: str):
+        if self._is_NA(value):
+            return None
+        return float(value)
+    
+
+    def fix_sensor(self, sensor: IPMISensor):
+        sensor.value    = self._fix_sensor_value(sensor.value)
+
+        sensor.status   = self._fix_sensor_status(sensor.status)
+        sensor.lc       = self._fix_sensor_threshold(sensor.lc)
+        sensor.lnc      = self._fix_sensor_threshold(sensor.lnc)
+        sensor.lnr      = self._fix_sensor_threshold(sensor.lnr)
+        sensor.uc       = self._fix_sensor_threshold(sensor.uc)
+        sensor.unc      = self._fix_sensor_threshold(sensor.unc)
+        sensor.unr      = self._fix_sensor_threshold(sensor.unr)
     
 

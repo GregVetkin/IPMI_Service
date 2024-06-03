@@ -1,6 +1,7 @@
 CREATE TABLE IPMI.SENSORS (
     id      SERIAL PRIMARY KEY,
     bmc_id  INT NOT NULL,
+    name    VARCHAR(50),
     unit    VARCHAR(50),
     status  VARCHAR(50),
     lnr     FLOAT,

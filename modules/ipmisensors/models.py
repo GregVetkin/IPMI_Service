@@ -2,22 +2,22 @@ from dataclasses import dataclass
 
 
 @dataclass
-class IPMISernsor:
-    name:   str
-    value:  str
-    unit:   str
-    status: str
-    lnr:    str
-    lc:     str
-    lnc:    str
-    unc:    str
-    uc:     str
-    unr:    str
+class IPMISensor:
+    name:   str     = None
+    value:  str     = None
+    unit:   str     = None
+    status: str     = None
+    lnr:    str     = None
+    lc:     str     = None
+    lnc:    str     = None
+    unc:    str     = None
+    uc:     str     = None
+    unr:    str     = None
 
 
 @dataclass
 class IPMIConnectionData:
-    host:       str
-    username:   str
-    password:   str
+    host:       str     = None
+    username:   str     = None
+    password:   str     = None
 

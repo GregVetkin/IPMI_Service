@@ -1,20 +1,24 @@
-from modules.ipmi           import Sensor, ConnectionData, SensorsCollectorIPMI
-from modules.database       import DatabaseIPMI
-from modules.logger         import Logger
+from modules.ipmi           import Sensor, ConnectionData
 from typing                 import List
-from .cache                 import CacheIPMI
+from .models                import ServiceData
+from time                   import sleep
 import concurrent.futures
 
 
 
 
+
+
+
 class ServiceIPMI:
-    def __init__(self, ipmi: SensorsCollectorIPMI, database: DatabaseIPMI, logger: Logger):
-        self._ipmi  = ipmi
-        self._db    = database
-        self._log   = logger
-        self._cache = CacheIPMI(self._db)
+    def __init__(self, service_data: ServiceData):
+        self._config    = service_data.config
+        self._ipmi      = service_data.ipmi
+        self._db        = service_data.db
+        self._log       = service_data.logger
+        self._cache     = service_data.cache
         self._cache.cache_all_bmc_sensors()
+        self._interval  = self._config.worker.interval
 
 
     def _sensor_data_check(self, bmc: ConnectionData, sensor: Sensor):
@@ -31,7 +35,10 @@ class ServiceIPMI:
     
 
     def run(self):
-        BMCs = self._db.get_ipmi_connections_data()
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            executor.map(self._record_bmc_sensors, BMCs)
-        
+        while True:
+            print("start")
+            BMCs = self._db.get_ipmi_connections_data()
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                executor.map(self._record_bmc_sensors, BMCs)
+            print("end")
+            sleep(self._interval)

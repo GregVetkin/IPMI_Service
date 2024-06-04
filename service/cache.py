@@ -3,10 +3,11 @@ from modules.ipmi       import Sensor, ConnectionData
 from typing             import List
 
 
+
 class CacheIPMI:
     def __init__(self, database: DatabaseIPMI) -> None:
         self._cache = {}
-        self._db = database
+        self._db    = database
 
 
     def _get_bmc_sensors(self, bmc: ConnectionData) -> List[Sensor]:
@@ -23,12 +24,14 @@ class CacheIPMI:
             for sensor in self._get_bmc_sensors(bmc):
                 self._cache[bmc.address][sensor.name] = sensor
 
+
     def sensor_unchanged(self, bmc: ConnectionData, sensor: Sensor) -> bool:
         value = sensor.value
         sensor.value = None
         unchanged = sensor == self._cache[bmc.address][sensor.name]
         sensor.value = value
         return unchanged
+    
     
     def sensor_in_cache(self, bmc: ConnectionData, sensor: Sensor) -> bool:
         if bmc.address in self._cache:

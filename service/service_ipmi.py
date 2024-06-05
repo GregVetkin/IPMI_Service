@@ -88,7 +88,7 @@ class ServiceIPMI:
 
     def _sensor_data_check(self, bmc: ConnectionData, sensor: Sensor):
         if not self._cache.sensor_in_cache(bmc, sensor):
-            self._db_insert_sensor_data
+            self._db_insert_sensor_data(bmc, sensor)
         elif not self._cache.sensor_unchanged(bmc, sensor):
             self._db_update_sensor_data(bmc, sensor)
 

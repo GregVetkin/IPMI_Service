@@ -11,3 +11,5 @@ PARAMETER_WORKER_INTERVAL   = "interval"
 
 SECTION_LOGS                = "LOGS"
 PARAMETER_LOGS_LOGFILE      = "log_file"
+PARAMETER_LOGS_MAXSIZE      = "max_size"
+PARAMETER_LOGS_LEVEL        = "log_lvl"

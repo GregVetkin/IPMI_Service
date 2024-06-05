@@ -32,7 +32,9 @@ class ServiceConfigReader:
 
     def _get_logger_configuration(self) -> LoggerConfig:
         return LoggerConfig(
-            file = self._config.get(SECTION_LOGS, PARAMETER_LOGS_LOGFILE),
+            file        = self._config.get(SECTION_LOGS, PARAMETER_LOGS_LOGFILE),
+            level       = self._config.get(SECTION_LOGS, PARAMETER_LOGS_LEVEL),
+            max_size    = self._config.getint(SECTION_LOGS, PARAMETER_LOGS_MAXSIZE)
         )
     
     def get_service_config(self) -> ServiceConfig:

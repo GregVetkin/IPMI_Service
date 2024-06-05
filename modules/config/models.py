@@ -18,6 +18,8 @@ class DatabaseConfig:
 @dataclass
 class LoggerConfig:
     file:       str = "./logs.log"
+    level:      str = "DEBUG"
+    max_size:   int = 100 * 1024 * 1024     # 100mb
 
 
 @dataclass

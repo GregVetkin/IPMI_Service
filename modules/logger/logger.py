@@ -1,10 +1,10 @@
 import  logging
 import  logging.config
-from    modules.config.models import LoggerConfig
+from    logging.handlers        import RotatingFileHandler
+from    modules.config.models   import LoggerConfig
 
 
-LOG_LEVEL   = "INFO"
-LOG_FORMAT  = '%(asctime)s---%(levelname)s---%(message)s'
+LOG_FORMAT      = '%(asctime)s---%(levelname)s---%(message)s'
 
 
 
@@ -19,14 +19,17 @@ class Logger:
         self._set_file_handler()
 
     def _set_log_level(self):
-        level = getattr(logging, LOG_LEVEL, logging.INFO)
+        level = getattr(logging, self._config.level, logging.INFO)
         self._logger.setLevel(level)
 
     def _get_formatter(self):
         return logging.Formatter(LOG_FORMAT)
     
     def _set_file_handler(self):
-        file_handler = logging.FileHandler(self._config.file)
+        file_handler = RotatingFileHandler(
+            filename = self._config.file,
+            maxBytes = self._config.max_size
+            )
         file_handler.setFormatter(self._get_formatter())
         self._logger.addHandler(file_handler)
 

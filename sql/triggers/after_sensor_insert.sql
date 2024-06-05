@@ -1,0 +1,4 @@
+CREATE TRIGGER after_sensor_insert
+AFTER INSERT ON IPMI.SENSORS
+FOR EACH ROW
+EXECUTE FUNCTION add_sensor_control();

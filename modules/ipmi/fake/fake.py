@@ -8,6 +8,6 @@ class FAKESensorsCollector(IpmitoolSensorsCollector):
     
     def _ipmitool_data(self) -> str:
         data = ""
-        with open("./modules/ipmisensors/fake/ipmitool_output.txt", "r") as file:
+        with open("./modules/ipmi/fake/ipmitool_output.txt", "r") as file:
             data += file.read()
         return data

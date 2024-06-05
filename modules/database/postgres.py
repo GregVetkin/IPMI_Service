@@ -203,5 +203,38 @@ class PostgresDatabaseIPMI(PostgresDatabase, DatabaseIPMI):
             bmc.address,
         ])
 
-
+    def get_sensors_control_info(self):
+        query = """
+            SELECT 
+                BMC.address,
+                SENSORS.name,
+                SENSORS_CONTROL.control
+            FROM 
+                IPMI.SENSORS_CONTROL AS SENSORS_CONTROL
+            JOIN 
+                IPMI.SENSORS AS SENSORS ON SENSORS_CONTROL.sensor_id = SENSORS.id
+            JOIN 
+                IPMI.BMC AS BMC ON SENSORS.bmc_id = BMC.id
+            ;
+        """
+        result  = self._fetch_results(query)
+        control = {}
+        for line in result:
+            bmc_address = line[0]
+            sensor_name = line[1]
+            controlling = line[2]
+            if bmc_address not in control:
+                control[bmc_address] = {}
+            control[bmc_address][sensor_name] = controlling
+        return control
     
+
+    def get_polling_interval(self):
+        interval = 60
+
+        """
+        TODO 
+        Реализовать запрос получения значения интервала опроса для ipmi сервиса
+        """
+
+        return interval

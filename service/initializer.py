@@ -33,7 +33,7 @@ class ServiceCreator:
     def _init_cache(self):
         if self._db is None:
             self._init_database()
-        return CacheIPMI(self._db)
+        return CacheIPMI(self._db, self._log)
 
     def _get_ServiceData(self):
         return ServiceData(

@@ -42,13 +42,23 @@ class IpmitoolSensorsCollector(SensorsCollectorIPMI):
 
 
     def _ipmitool_data(self) -> str:
-        r = ["sudo", "ipmitool", "-H", self._conn.address, "-U", self._conn.username, "-P", self._conn.password, "sensor", "list"]
-        # l = ["sudo", "ipmitool", "sensor", "list"]
-        # command = r if not local else l
-        command = r
-        result  = subprocess.run(command, capture_output=True, text=True)
-        return result.stdout
-    
+        command = ["sudo", "ipmitool", "-H", self._conn.address, "-U", self._conn.username, "-P", self._conn.password, "sensor", "list"]
+
+        try:
+            result  = subprocess.run(
+                command,
+                check   = True,
+                stdout  = subprocess.PIPE,
+                stderr  = subprocess.PIPE,
+                text    = True  
+            )
+        except subprocess.CalledProcessError as e:
+            error_message = e.stderr.strip()
+            raise Exception(error_message)
+        else:
+            return result.stdout
+
+
 
     def collect(self) -> List[Sensor]:
         sensors = []

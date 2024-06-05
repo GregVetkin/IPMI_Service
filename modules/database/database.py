@@ -43,3 +43,11 @@ class DatabaseIPMI(ABC):
     @abstractmethod
     def insert_sensor_value(self, bmc: ConnectionData, sensor: Sensor):
         pass
+
+    @abstractmethod
+    def get_sensors_control_info(self) -> dict:
+        pass
+
+    @abstractmethod
+    def get_polling_interval(self) -> float:
+        pass

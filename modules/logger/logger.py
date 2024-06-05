@@ -3,7 +3,7 @@ import  logging.config
 from    modules.config.models import LoggerConfig
 
 
-LOG_LEVEL   = "DEBUG"
+LOG_LEVEL   = "INFO"
 LOG_FORMAT  = '%(asctime)s---%(levelname)s---%(message)s'
 
 

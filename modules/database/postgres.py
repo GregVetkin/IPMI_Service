@@ -203,7 +203,7 @@ class PostgresDatabaseIPMI(PostgresDatabase, DatabaseIPMI):
             bmc.address,
         ])
 
-    def get_sensors_control_info(self):
+    def get_sensors_control_info(self) -> dict:
         query = """
             SELECT 
                 BMC.address,
@@ -229,7 +229,7 @@ class PostgresDatabaseIPMI(PostgresDatabase, DatabaseIPMI):
         return control
     
 
-    def get_polling_interval(self):
+    def get_polling_interval(self) -> float:
         interval = 60
 
         """

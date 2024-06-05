@@ -21,7 +21,7 @@ class ServiceIPMI:
         self._check_database()
         self._cache.cache_all_bmc_sensors()
         self._interval  = self._config.worker.interval # or self._db.get_polling_interval()
-        self._control   = self._get_sensors_control()
+        self._control   = {}
 
     def _check_database(self):
         try:
@@ -62,7 +62,7 @@ class ServiceIPMI:
         else:
             self._log.debug(f"Показания сенсора [{bmc.address}][{sensor.name}] успешно записаны.")
 
-    def _ipmi_collect_sensors(self, bmc: ConnectionData):
+    def _ipmi_collect_sensors(self, bmc: ConnectionData) -> List[Sensor]:
         try:
             self._log.info(f"Сбор датчиков по адресу {bmc.address}")
             ipmi = self._ipmi(bmc)
@@ -84,6 +84,14 @@ class ServiceIPMI:
             self._log.info("Информация о контролируемых датчиках получена")
             return control
 
+    def _db_get_ipmi_connections_data(self):
+        try:
+            self._log.debug(f"Получение данных всех bmc из базы данных")
+            result = self._db.get_ipmi_connections_data()
+        except Exception as e:
+            self._log.critical(f"Не удалось получить данные bmc из базы данных. Вызвано исключение: {e}")
+            sys.exit(1)
+        return result
 
 
     def _sensor_data_check(self, bmc: ConnectionData, sensor: Sensor):
@@ -112,7 +120,7 @@ class ServiceIPMI:
         while True:
             print("start")
 
-            BMCs = self._db.get_ipmi_connections_data()
+            BMCs = self._db_get_ipmi_connections_data()
             self._get_sensors_control()
             
             with concurrent.futures.ThreadPoolExecutor() as executor:
